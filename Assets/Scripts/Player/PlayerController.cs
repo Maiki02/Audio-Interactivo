@@ -1,10 +1,8 @@
-using System.Collections;
-using Cinemachine;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField] private AudioSource stepAudioSource; // Fuente de audio para reproducir sonidos
     [SerializeField] private float moveSpeed = 2.5f;
     [SerializeField] private float sensitivity = 700f; // Sensibilidad del ratón
     public Transform cameraTransform;
@@ -22,7 +20,6 @@ public class PlayerController : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-
     }
 
     void Update()
@@ -54,13 +51,6 @@ public class PlayerController : MonoBehaviour
         float moveX = Input.GetAxis("Horizontal") * moveSpeed * Time.deltaTime;
         float moveZ = Input.GetAxis("Vertical") * moveSpeed * Time.deltaTime;
 
-        //Aplicamos más velocidad si el shift está pulsado
-        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
-        {
-            moveX *= 2f;
-            moveZ *= 2f;
-        }
-
         //Calculamos la dirección de movimiento
         Vector3 move = transform.right * moveX + transform.forward * moveZ;
 
@@ -68,8 +58,19 @@ public class PlayerController : MonoBehaviour
         move.y -= 9.81f * Time.deltaTime;
 
         //Movemos al jugador
+        //Si se mueve, reproducimos el sonido de pasos
+        if (move.x != 0 || move.z != 0)
+        {
+            if (!stepAudioSource.isPlaying)
+            {
+                stepAudioSource.Play();
+            }
+        } else
+        {
+            stepAudioSource.Stop();
+        }
+        
         controller.Move(move);
     }
-
-
+    
 }

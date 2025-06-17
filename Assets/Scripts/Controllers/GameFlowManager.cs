@@ -1,22 +1,62 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;  // Para Image
 
 public class GameFlowManager : MonoBehaviour
 {
+    [SerializeField] private GameObject blackImage;  // Debe llevar un componente Image
+    private Image _blackImageUI;
+    [SerializeField] private AudioSource narratorAudioSource; // Fuente de audio para el narrador
+
     void Start()
     {
-        //AudioController.Instance.PlayMusic(AudioType.MusicLevel1, true);
+        // Cacheamos el Image y lanzamos la corutina
+        _blackImageUI = blackImage.GetComponent<Image>();
+        StartCoroutine(InitGameCoroutine());
+        //blackImage.SetActive(false); // Desactivamos la pantalla negra al inicio
     }
 
-    void NextLevel()
+    private IEnumerator InitGameCoroutine()
     {
-        //GameController.Instance.NextLevel(); //Subimos el nivel, (para activar otra room)
-                                             //Llevamos al jugador al spawn de la nueva room
-                                             //Activar y desactivar objetos de la nueva room
-                                             //Ponemos una nueva música
+        float initialDelay = 1f;
+        float fadeDuration = 10f;
+        bool dialogueStarted = false;
 
+        AudioController.Instance.PlaySFX(AudioType.Wind);
+        
+        // 1) Esperamos 1 segundo con la pantalla negra
+        yield return new WaitForSeconds(initialDelay);
 
-        //TODO: Implementar la lógica para cargar la siguiente escena o nivel
+        // 2) Al segundo 1, iniciamos lluvia y viento
+        AudioController.Instance.PlaySFX(AudioType.Rain);
+
+        // 3) Fade out de opacidad de 1 a 0 en fadeDuration segundos
+        float elapsed = 0f;
+        while (elapsed < fadeDuration)
+        {
+            elapsed += Time.deltaTime;
+            float alpha = Mathf.Lerp(1f, 0f, elapsed / fadeDuration);
+            _blackImageUI.color = new Color(0f, 0f, 0f, alpha);
+
+            // 4) Al cabo de 3 segundos, lanzamos el diálogo del narrador (solo una vez)
+            if (!dialogueStarted && elapsed >= 3f)
+            {
+                dialogueStarted = true;
+                narratorAudioSource.PlayOneShot(narratorAudioSource.clip);
+            }
+
+            yield return null;
+        }
+
+        // 5) Desactivamos la pantalla negra
+        blackImage.SetActive(false);
+
+        // 6) Esperamos 3 segundos más e iniciamos la música de fondo
+        yield return new WaitForSeconds(3f);
+
+        AudioController.Instance.PlayMusic(AudioType.BackgroundMusic, true);
+
+        
     }
 }
+

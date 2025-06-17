@@ -1,15 +1,17 @@
 public enum AudioType
 {
     BackgroundMusic,
+    Rain,
+    Wind,
 
     DoorOpen,
     DoorClose,
-    Rain,
-    PlayerFootstep,
+    StepPlayer,
+
+    NarratorIntro,
 
     // SFX in Objects
     FireClicking,
     Turntable,
     Clock,
-    Wind
 }

@@ -37,7 +37,7 @@ public class Door: MonoBehaviour
             {
                 Debug.Log("Cambiando estado de la puerta: " + (isDoorOpen ? "Abriendo" : "Cerrando"));
                 doorAnimator.SetBool("isOpen", isDoorOpen); // Activamos la animación de abrir/cerrar
-                //AudioController.Instance.PlaySFX(isDoorOpen ? AudioType.DoorOpen : AudioType.DoorClose);
+                AudioController.Instance.PlaySFX(isDoorOpen ? AudioType.DoorOpen : AudioType.DoorClose);
             }
 
         }
