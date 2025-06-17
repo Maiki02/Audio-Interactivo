@@ -23,12 +23,12 @@ public class GameFlowManager : MonoBehaviour
         bool dialogueStarted = false;
 
         AudioController.Instance.PlaySFX(AudioType.Wind);
+        AudioController.Instance.PlaySFX(AudioType.Rain);
         
         // 1) Esperamos 1 segundo con la pantalla negra
         yield return new WaitForSeconds(initialDelay);
 
         // 2) Al segundo 1, iniciamos lluvia y viento
-        AudioController.Instance.PlaySFX(AudioType.Rain);
 
         // 3) Fade out de opacidad de 1 a 0 en fadeDuration segundos
         float elapsed = 0f;
